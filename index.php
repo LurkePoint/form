@@ -12,20 +12,7 @@
 </head>
 <body>
     <?php 
-        $to = 'ncpremote@mail.ru';
-
-        $checkEmail = $connect->prepare('SELECT * FROM applications WHERE email = ?');
-        $checkEmail->execute([
-            $to
-        ]);
-
-        $emailError = $checkEmail->fetch();
-
-        if($checkEmail->rowCount() > 0) {
-            $_SESSION['emailErrorHideBtn'] = 'style="display: none;"';
-        } else {
-            unset($_SESSION['emailErrorHideBtn']);
-        }
+        
     ?>
     <div class="blockForm">
         <form method="post" action="functions.php">
@@ -33,8 +20,20 @@
             <input type="tel" name="phone" pattern="[0-9]{11}" placeholder="Телефон: 89992223344" required><br>
             <input type="email" name="email" placeholder="Email" id="email" required><br>
             <textarea name="msg" required>Ваше сообщение...</textarea>
-            <button <?php echo $_SESSION['emailErrorHideBtn']; ?> type="submit">Отправить</button>
             <?php 
+                $to = 'ncpremote@mail.ru';
+
+                $checkEmail = $connect->prepare('SELECT * FROM applications WHERE email = ?');
+                $checkEmail->execute([
+                    $to
+                ]);
+
+                $emailError = $checkEmail->fetch();
+
+                if(!$checkEmail->rowCount() > 0) {
+                    echo '<button type="submit">Отправить</button>';
+                } 
+             
                 if (isset($_SESSION['msgError'])) {
                     echo '<h4 style="border: 2px solid red; padding: 5px;">'. $_SESSION['msgError'] . '</h4>';
                     unset($_SESSION['msgError']);
